@@ -22,6 +22,11 @@ const transporter = nodemailer.createTransport({
   host: "smtp.titan.email",
   port: 465,
   secure: true,
+
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
+
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -42,6 +47,9 @@ app.post("/api/contact", async (req, res) => {
         message: "Please complete all required fields.",
       });
     }
+
+    console.log("Contact request received");
+    console.log("Connecting to Titan SMTP...");
 
     await transporter.sendMail({
       from: `"OTDR-TCCS Website" <${process.env.EMAIL_USER}>`,
@@ -64,6 +72,8 @@ app.post("/api/contact", async (req, res) => {
         <p>${message || "No additional message."}</p>
       `,
     });
+
+    console.log("Email successfully sent through Titan");
 
     res.json({
       success: true,
