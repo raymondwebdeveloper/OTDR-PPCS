@@ -1193,6 +1193,39 @@
           margin-top: 50px;
         }
       }
+      .form-success {
+        display: none;
+        text-align: center;
+        padding: 70px 30px;
+      }
+
+      .success-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 24px;
+        border-radius: 50%;
+        background: #0b8747;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+      }
+
+      .form-success h3 {
+        font-size: 32px;
+        margin: 0 0 12px;
+      }
+
+      .form-success p {
+        margin: 5px 0;
+        color: #666;
+      }
+
+      .form-success .btn {
+        margin-top: 28px;
+      }
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -1516,83 +1549,108 @@
         </div>
 
         <!-- CONTACT FORM -->
+        <form
+          class="contact-form"
+          id="contactForm"
+          action="https://api.web3forms.com/submit"
+          method="POST"
+        >
+          <input
+            type="hidden"
+            name="access_key"
+            value="f46b0250-f691-4c07-9cfd-84683f218bb4"
+          />
+          <div id="formContent">
+            <div class="form-row">
+              <div class="form-group">
+                <label>First Name</label>
+                <input
+                  id="firstName"
+                  name="First Name"
+                  type="text"
+                  placeholder="Your first name"
+                  required
+                />
+              </div>
 
-        <form class="contact-form" id="contactForm">
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input
-                id="firstName"
-                type="text"
-                placeholder="Your first name"
-                required
-              />
+              <div class="form-group">
+                <label>Last Name</label>
+                <input
+                  id="lastName"
+                  name="Last Name"
+                  type="text"
+                  placeholder="Your last name"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Email</label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@email.com"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Phone</label>
+                <input id="phone" name="Phone" type="tel" placeholder="+63" />
+              </div>
             </div>
 
             <div class="form-group">
-              <label>Last Name</label>
-              <input
-                id="lastName"
-                type="text"
-                placeholder="Your last name"
-                required
-              />
-            </div>
-          </div>
+              <label>Training Interest</label>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Email</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="you@email.com"
-                required
-              />
+              <select id="training" name="Training Interest" required>
+                <option value="">Select Training</option>
+                <option value="Fiber Optic Fundamentals">
+                  Fiber Optic Fundamentals
+                </option>
+                <option value="Fusion Splicing">Fusion Splicing</option>
+                <option value="OTDR Testing">OTDR Testing</option>
+                <option value="Power Meter Testing">Power Meter Testing</option>
+                <option value="FTTH - Fiber to the Home Installation">
+                  FTTH - Fiber to the Home Installation
+                </option>
+                <option value="Troubleshooting">Troubleshooting</option>
+              </select>
             </div>
 
             <div class="form-group">
-              <label>Phone</label>
-              <input id="phone" type="tel" placeholder="+63" />
+              <label>Message</label>
+
+              <textarea
+                id="message"
+                name="Message"
+                placeholder="Tell us about your training requirements..."
+              ></textarea>
             </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary submit-btn"
+              id="submitBtn"
+            >
+              Send Inquiry →
+            </button>
           </div>
+          <div id="successMessage" class="form-success">
+            <div class="success-icon">✓</div>
 
-          <div class="form-group">
-            <label>Training Interest</label>
+            <h3>Thank you!</h3>
 
-            <select id="training" required>
-              <option value="">Select Training</option>
-              <option value="Fiber Optic Fundamentals">
-                Fiber Optic Fundamentals
-              </option>
-              <option value="Fusion Splicing">Fusion Splicing</option>
-              <option value="OTDR Testing">OTDR Testing</option>
-              <option value="Power Meter Testing">Power Meter Testing</option>
-              <option value="FTTH - Fiber to the Home Installation">
-                FTTH - Fiber to the Home Installation
-              </option>
-              <option value="Troubleshooting">Troubleshooting</option>
-            </select>
+            <p>Your inquiry has been sent successfully.</p>
+            <p>We'll get back to you as soon as possible.</p>
+
+            <button type="button" class="btn btn-primary" id="resetFormBtn">
+              Send Another Inquiry →
+            </button>
           </div>
-
-          <div class="form-group">
-            <label>Message</label>
-
-            <textarea
-              id="message"
-              placeholder="Tell us about your training requirements..."
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="btn btn-primary submit-btn"
-            id="submitBtn"
-          >
-            Send Inquiry →
-          </button>
-
-          <p id="formStatus"></p>
         </form>
       </div>
     </section>
@@ -2135,6 +2193,59 @@
       /* YEAR */
 
       document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+    <!-- Form -->
+    <script>
+      const contactForm = document.getElementById("contactForm");
+      const formContent = document.getElementById("formContent");
+      const successMessage = document.getElementById("successMessage");
+      const submitBtn = document.getElementById("submitBtn");
+      const resetFormBtn = document.getElementById("resetFormBtn");
+
+      contactForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending...";
+
+        try {
+          const formData = new FormData(contactForm);
+          const object = Object.fromEntries(formData);
+
+          const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(object),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            contactForm.reset();
+
+            formContent.style.display = "none";
+            successMessage.style.display = "block";
+          } else {
+            alert("Unable to send your inquiry. Please try again.");
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Unable to send your inquiry. Please try again.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send Inquiry →";
+        }
+      });
+
+      resetFormBtn.addEventListener("click", () => {
+        successMessage.style.display = "none";
+        formContent.style.display = "block";
+        contactForm.reset();
+      });
     </script>
   </body>
 </html>
