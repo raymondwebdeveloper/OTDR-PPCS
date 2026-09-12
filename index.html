@@ -1517,66 +1517,82 @@
 
         <!-- CONTACT FORM -->
 
-        <form class="contact-form">
+        <form class="contact-form" id="contactForm">
           <div class="form-row">
             <div class="form-group">
-              <label> First Name </label>
-
-              <input type="text" placeholder="Your first name" required />
+              <label>First Name</label>
+              <input
+                id="firstName"
+                type="text"
+                placeholder="Your first name"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label> Last Name </label>
-
-              <input type="text" placeholder="Your last name" required />
+              <label>Last Name</label>
+              <input
+                id="lastName"
+                type="text"
+                placeholder="Your last name"
+                required
+              />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label> Email </label>
-
-              <input type="email" placeholder="you@email.com" required />
+              <label>Email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="you@email.com"
+                required
+              />
             </div>
 
             <div class="form-group">
-              <label> Phone </label>
-
-              <input type="tel" placeholder="+63" />
+              <label>Phone</label>
+              <input id="phone" type="tel" placeholder="+63" />
             </div>
           </div>
 
           <div class="form-group">
-            <label> Training Interest </label>
+            <label>Training Interest</label>
 
-            <select>
-              <option>Select Training</option>
-
-              <option>Fiber Optic Fundamentals</option>
-
-              <option>Fusion Splicing</option>
-
-              <option>OTDR Testing</option>
-
-              <option>Power Meter Testing</option>
-
-              <option>FTTH - Fiber to the Home Installation</option>
-
-              <option>Troubleshooting</option>
+            <select id="training" required>
+              <option value="">Select Training</option>
+              <option value="Fiber Optic Fundamentals">
+                Fiber Optic Fundamentals
+              </option>
+              <option value="Fusion Splicing">Fusion Splicing</option>
+              <option value="OTDR Testing">OTDR Testing</option>
+              <option value="Power Meter Testing">Power Meter Testing</option>
+              <option value="FTTH - Fiber to the Home Installation">
+                FTTH - Fiber to the Home Installation
+              </option>
+              <option value="Troubleshooting">Troubleshooting</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label> Message </label>
+            <label>Message</label>
 
             <textarea
+              id="message"
               placeholder="Tell us about your training requirements..."
             ></textarea>
           </div>
 
-          <button type="submit" class="btn btn-primary submit-btn">
+          <button
+            type="submit"
+            class="btn btn-primary submit-btn"
+            id="submitBtn"
+          >
             Send Inquiry →
           </button>
+
+          <p id="formStatus"></p>
         </form>
       </div>
     </section>
@@ -2119,6 +2135,60 @@
       /* YEAR */
 
       document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+
+    <script>
+      const contactForm = document.getElementById("contactForm");
+      const submitBtn = document.getElementById("submitBtn");
+      const formStatus = document.getElementById("formStatus");
+
+      contactForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const data = {
+          firstName: document.getElementById("firstName").value.trim(),
+          lastName: document.getElementById("lastName").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          training: document.getElementById("training").value,
+          message: document.getElementById("message").value.trim(),
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending...";
+        formStatus.textContent = "";
+
+        try {
+          const response = await fetch("http://localhost:3000/api/contact", {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.message || "Unable to send inquiry.");
+          }
+
+          formStatus.textContent =
+            "Thank you! Your inquiry has been sent successfully.";
+
+          contactForm.reset();
+        } catch (error) {
+          console.error(error);
+
+          formStatus.textContent =
+            error.message || "Unable to send inquiry. Please try again.";
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send Inquiry →";
+        }
+      });
     </script>
   </body>
 </html>
